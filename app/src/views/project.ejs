@@ -1,0 +1,29 @@
+<%- include("partials/header", { title: project.name + " — TaskFlow" }) %>
+
+<a class="back-link" href="/">&larr; All projects</a>
+<h1><%= project.name %></h1>
+<% if (project.description) { %>
+  <p class="project-desc"><%= project.description %></p>
+<% } %>
+
+<form class="new-task-form" method="post" action="/projects/<%= project.id %>/tasks">
+  <input type="text" name="title" placeholder="New task" required>
+  <select name="priority">
+    <option value="low">Low</option>
+    <option value="medium" selected>Medium</option>
+    <option value="high">High</option>
+  </select>
+  <button type="submit">Add task</button>
+</form>
+
+<ul class="task-list">
+  <% project.tasks.forEach(function(task) { %>
+    <li class="task-item">
+      <span class="task-badge task-badge--<%= task.status %>"><%= task.status.replace("_", " ") %></span>
+      <span class="priority-badge priority-badge--<%= task.priority %>"><%= task.priority %></span>
+      <%= task.title %>
+    </li>
+  <% }); %>
+</ul>
+
+<%- include("partials/footer") %>

@@ -1,0 +1,118 @@
+:root {
+  --bg: #0E1117;
+  --surface: #161C2D;
+  --teal: #0ABFBC;
+  --coral: #E05C5C;
+  --white: #F0F4FF;
+  --muted: #6B7A9F;
+  --label: #A0AABF;
+  --border: #252E45;
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: -apple-system, "Segoe UI", Inter, sans-serif;
+  line-height: 1.6;
+}
+
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.top-bar { height: 3px; background: var(--teal); }
+
+.app-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border);
+}
+.brand { font-size: 18px; font-weight: 700; color: var(--white); }
+.brand:hover { text-decoration: none; }
+.brand-sub { font-size: 13px; color: var(--muted); }
+
+.app-main { max-width: 960px; margin: 0 auto; padding: 32px; }
+
+h1 { font-size: 24px; margin-bottom: 16px; }
+
+.new-project-form, .new-task-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+input[type="text"], select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--white);
+  padding: 8px 12px;
+  font-size: 14px;
+}
+input[type="text"] { flex: 1; min-width: 160px; }
+button {
+  background: var(--teal);
+  color: #0E1117;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: block;
+  color: var(--white);
+}
+.project-card:hover { border-color: var(--teal); text-decoration: none; }
+.project-card-title { font-weight: 600; margin-bottom: 6px; }
+.project-card-desc { font-size: 13px; color: var(--label); margin-bottom: 10px; }
+.project-card-count { font-size: 12px; color: var(--muted); }
+
+.back-link { display: inline-block; margin-bottom: 16px; font-size: 13px; }
+.project-desc { color: var(--label); margin-bottom: 20px; }
+
+.task-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.task-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.task-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.task-badge--todo { background: rgba(107,122,159,0.15); color: var(--muted); }
+.task-badge--in_progress { background: rgba(10,191,188,0.15); color: var(--teal); }
+.task-badge--done { background: rgba(224,92,92,0.15); color: var(--coral); }
+
+.priority-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.priority-badge--low { background: rgba(107,122,159,0.15); color: var(--muted); }
+.priority-badge--medium { background: rgba(10,191,188,0.15); color: var(--teal); }
+.priority-badge--high { background: rgba(224,92,92,0.15); color: var(--coral); }

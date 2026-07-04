@@ -1,0 +1,25 @@
+<%- include("partials/header", { title: "TaskFlow" }) %>
+
+<h1>Projects</h1>
+
+<form class="new-project-form" method="post" action="/projects">
+  <input type="text" name="name" placeholder="Project name" required>
+  <input type="text" name="description" placeholder="Description (optional)">
+  <button type="submit">New project</button>
+</form>
+
+<div class="project-grid">
+  <% projects.forEach(function(project) { %>
+    <a class="project-card" href="/projects/<%= project.id %>">
+      <div class="project-card-title"><%= project.name %></div>
+      <% if (project.description) { %>
+        <div class="project-card-desc"><%= project.description %></div>
+      <% } %>
+      <div class="project-card-count">
+        <%= project.tasks.length %> task<%= project.tasks.length === 1 ? "" : "s" %>
+      </div>
+    </a>
+  <% }); %>
+</div>
+
+<%- include("partials/footer") %>
