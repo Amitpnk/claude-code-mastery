@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code Setup — Video 2 · Learn Claude Code the Right Way</title>
+  <meta name="description" content="Slide deck for Video 2: Claude Code Setup — Install, Configure & Run.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0E1117;
+      --surface:   #161C2D;
+      --surface2:  #1E2740;
+      --teal:      #0ABFBC;
+      --teal-dim:  #087f7d;
+      --coral:     #E05C5C;
+      --white:     #F0F4FF;
+      --muted:     #6B7A9F;
+      --label:     #A0AABF;
+      --border:    #252E45;
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'Inter', sans-serif;
+      --radius:    10px;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    a { color: var(--teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .top-bar { height: 3px; background: var(--border); position: relative; }
+    .top-bar .fill {
+      height: 100%;
+      background: var(--teal);
+      width: 8.33%;
+      transition: width 0.35s ease;
+    }
+
+    .deck-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .back-link {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--label);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .back-link:hover { color: var(--teal); }
+    .deck-meta {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .deck-meta .counter { color: var(--teal); }
+
+    .stage {
+      position: relative;
+      height: calc(100vh - 3px - 53px - 64px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 72px;
+      opacity: 0;
+      transform: translateX(24px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .kicker {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--teal);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .slide h2 {
+      font-size: clamp(22px, 3.2vw, 34px);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+      color: var(--white);
+    }
+    .subtitle {
+      font-size: 16px;
+      color: var(--label);
+      margin-bottom: 28px;
+    }
+
+    .slide.title-slide { align-items: center; text-align: center; }
+    .slide.title-slide .kicker { margin-bottom: 28px; }
+    .slide.title-slide h1 {
+      font-size: clamp(34px, 6vw, 58px);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .slide.title-slide h1 em { font-style: normal; color: var(--teal); }
+    .slide.title-slide .tagline {
+      font-size: 19px;
+      color: var(--label);
+      margin-bottom: 40px;
+    }
+    .series-label {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--teal);
+      background: rgba(10,191,188,0.08);
+      border: 1px solid rgba(10,191,188,0.25);
+      border-radius: 4px;
+      padding: 4px 12px;
+      letter-spacing: 0.06em;
+    }
+
+    .num-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .num-grid.cols-1 { grid-template-columns: 1fr; }
+    .num-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .num-card .n {
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--teal);
+      flex-shrink: 0;
+      min-width: 30px;
+    }
+    .num-card .t { font-size: 15px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+    .num-card .d { font-size: 13.5px; color: var(--label); line-height: 1.55; }
+
+    .split-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .split-col {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+    .split-col.good { border-color: rgba(10,191,188,0.3); }
+    .split-col.bad { border-color: rgba(224,92,92,0.3); }
+    .split-col h4 {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .split-col.good h4 { color: var(--teal); }
+    .split-col.bad h4 { color: var(--coral); }
+    .split-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .split-col li { font-size: 14px; color: var(--label); display: flex; gap: 8px; }
+    .split-col.good li::before { content: '✓'; color: var(--teal); }
+    .split-col.bad li::before { content: '✗'; color: var(--coral); }
+
+    .flow {
+      display: flex;
+      align-items: stretch;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .flow-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      min-width: 120px;
+      flex: 1;
+    }
+    .flow-step .t { font-size: 13.5px; font-weight: 600; color: var(--white); }
+    .flow-step .d { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .flow-arrow { display: flex; align-items: center; color: var(--muted); font-size: 16px; }
+
+    .two-pane {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: center;
+    }
+    .check-list { display: flex; flex-direction: column; gap: 18px; }
+    .check-item { display: flex; gap: 12px; }
+    .check-item .icon {
+      color: var(--teal);
+      font-family: var(--mono);
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border: 1px solid rgba(10,191,188,0.35);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+    .check-item .t { font-size: 14.5px; font-weight: 600; color: var(--white); margin-bottom: 3px; }
+    .check-item .d { font-size: 13px; color: var(--label); line-height: 1.5; }
+
+    .code-block {
+      background: #0D1117;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .code-block .code-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .code-block pre {
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.8;
+      padding: 14px 16px;
+      color: var(--label);
+      overflow-x: auto;
+    }
+    .code-block .c-h { color: var(--teal); }
+    .code-block .c-prompt { color: var(--muted); }
+
+    .compare-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .compare-col {
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .compare-col.teal-border { border-color: rgba(10,191,188,0.3); }
+    .compare-col h4 { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; color: var(--teal); }
+    .compare-col .sub { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+    .compare-col ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .compare-col li { font-size: 13.5px; color: var(--label); display: flex; gap: 8px; line-height: 1.4; }
+    .compare-col li::before { content: '—'; color: var(--teal); flex-shrink: 0; }
+
+    .table-list { display: flex; flex-direction: column; gap: 10px; }
+    .table-row {
+      display: grid;
+      grid-template-columns: 140px 1fr 1fr;
+      gap: 16px;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 13px 18px;
+    }
+    .table-row.head {
+      background: transparent;
+      border: none;
+      padding: 0 18px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .table-row .scope { font-family: var(--mono); font-size: 13px; color: var(--teal); }
+    .table-row .path { font-family: var(--mono); font-size: 13px; color: var(--white); }
+    .table-row .note { font-size: 13px; color: var(--label); }
+
+    .lead-statement {
+      font-size: 19px;
+      color: var(--white);
+      line-height: 1.55;
+      margin-bottom: 28px;
+      max-width: 780px;
+    }
+    .lead-statement .hl { color: var(--teal); }
+
+    .takeaway-list { display: flex; flex-direction: column; gap: 14px; }
+    .takeaway-item { display: flex; gap: 14px; align-items: flex-start; }
+    .takeaway-item .mark {
+      font-family: var(--mono);
+      font-size: 13px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .takeaway-item.neg .mark { background: rgba(224,92,92,0.15); color: var(--coral); }
+    .takeaway-item.pos .mark { background: rgba(10,191,188,0.15); color: var(--teal); }
+    .takeaway-item p { font-size: 14.5px; color: var(--label); line-height: 1.55; }
+
+    .slide.closing { text-align: center; align-items: center; }
+    .closing .next-video-tag { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .closing h2 { margin-bottom: 10px; }
+    .closing .tagline { color: var(--label); font-size: 15.5px; margin-bottom: 32px; }
+    .cta-row { display: flex; gap: 16px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap; }
+    .cta-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 26px;
+      min-width: 180px;
+    }
+    .cta-card .t { font-size: 14px; font-weight: 600; color: var(--teal); margin-bottom: 4px; }
+    .cta-card .d { font-size: 12.5px; color: var(--muted); }
+    .closing .footer-tag { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+    .deck-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      border-top: 1px solid var(--border);
+      height: 64px;
+    }
+    .nav-btn {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--label);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) { border-color: var(--teal-dim); color: var(--teal); }
+    .nav-btn:disabled { opacity: 0.35; cursor: default; }
+
+    .dots { display: flex; gap: 7px; }
+    .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      border: none;
+      padding: 0;
+    }
+    .dot.active { background: var(--teal); transform: scale(1.3); }
+    .dot:hover { background: var(--teal-dim); }
+
+    @media (max-width: 760px) {
+      body { overflow: auto; }
+      .stage { height: auto; min-height: calc(100vh - 3px - 53px - 64px); }
+      .slide { position: relative; padding: 28px 24px; opacity: 1; transform: none; display: none; }
+      .slide.active { display: flex; }
+      .split-two, .two-pane, .compare-two, .num-grid { grid-template-columns: 1fr; }
+      .flow { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); justify-content: flex-start; padding-left: 8px; }
+      .table-row { grid-template-columns: 1fr; gap: 4px; }
+      .table-row.head { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar"><div class="fill" id="progressFill"></div></div>
+
+<div class="deck-header">
+  <a class="back-link" href="../index.html">&larr; Back to series</a>
+  <div class="deck-meta">
+    <span>Video 2 · Claude Code Setup</span>
+    <span class="counter"><span id="slideNum">1</span> / <span id="slideTotal">11</span></span>
+  </div>
+</div>
+
+<div class="stage" id="stage">
+
+  <!-- SLIDE 1 -->
+  <section class="slide title-slide active">
+    <div class="kicker">Learn Claude Code the Right Way &nbsp;&middot;&nbsp; Video 2 of 15</div>
+    <h1>Claude Code Setup<br><em>Install, Configure &amp; Run — The Right Way</em></h1>
+    <p class="tagline">From zero to your first authenticated session in minutes.</p>
+    <span class="series-label">Claude Code Mastery Series</span>
+  </section>
+
+  <!-- SLIDE 2 -->
+  <section class="slide">
+    <div class="kicker">Agenda</div>
+    <h2>What we cover today</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="num-grid">
+      <div class="num-card"><span class="n">01</span><div><div class="t">Installing the CLI — three ways to get it running</div></div></div>
+      <div class="num-card"><span class="n">02</span><div><div class="t">Authenticating — subscription vs API credits</div></div></div>
+      <div class="num-card"><span class="n">03</span><div><div class="t">The essential settings before you start</div></div></div>
+      <div class="num-card"><span class="n">04</span><div><div class="t">The one file you create before your first prompt</div></div></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 -->
+  <section class="slide">
+    <h2>Installing Claude Code</h2>
+    <div class="subtitle">No npm required — one native install script per platform.</div>
+    <div class="two-pane">
+      <div class="check-list">
+        <div class="check-item"><span class="icon">&#10003;</span><div><div class="t">Native installer</div><div class="d">One script, no runtime dependency to manage yourself.</div></div></div>
+        <div class="check-item"><span class="icon">&#10003;</span><div><div class="t">Package managers</div><div class="d">Homebrew on macOS, WinGet on Windows, apt/dnf/apk on Linux.</div></div></div>
+        <div class="check-item"><span class="icon">&#10003;</span><div><div class="t">Requirements</div><div class="d">A terminal, git, and a project folder to run it in.</div></div></div>
+      </div>
+      <div class="code-block">
+        <div class="code-title">install.sh</div>
+        <pre><span class="c-prompt"># macOS / Linux / WSL</span>
+curl -fsSL https://claude.ai/install.sh | bash
+
+<span class="c-prompt"># Windows PowerShell</span>
+irm https://claude.ai/install.ps1 | iex
+
+<span class="c-prompt"># Homebrew</span>
+brew install --cask claude-code
+
+<span class="c-prompt"># WinGet</span>
+winget install Anthropic.ClaudeCode</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 -->
+  <section class="slide">
+    <h2>Authenticating</h2>
+    <div class="subtitle">Two everyday paths — plus enterprise cloud options.</div>
+    <div class="compare-two">
+      <div class="compare-col teal-border">
+        <h4>Claude Pro / Max / Team</h4>
+        <div class="sub">Login with your claude.ai account</div>
+        <ul>
+          <li>Flat subscription, no metered billing surprises</li>
+          <li>Fastest path for individual developers</li>
+          <li>Browser-based login on first run</li>
+        </ul>
+      </div>
+      <div class="compare-col teal-border">
+        <h4>Claude Console</h4>
+        <div class="sub">API access, pre-paid credits</div>
+        <ul>
+          <li>Pay-as-you-go, billed per token</li>
+          <li>Best for teams wiring up CI or automation</li>
+          <li>Also supports Bedrock, Google Cloud, Microsoft Foundry</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 -->
+  <section class="slide">
+    <h2>Your first run</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="flow">
+      <div class="flow-step"><div class="t">Run claude</div><div class="d">in your project dir</div></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><div class="t">Browser login</div><div class="d">one-time auth</div></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><div class="t">Workspace trust</div><div class="d">review settings rules</div></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><div class="t">Ready</div><div class="d">first prompt</div></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 -->
+  <section class="slide">
+    <h2>Permission modes</h2>
+    <div class="subtitle">How much Claude can do before it stops and asks.</div>
+    <div class="num-grid cols-1">
+      <div class="num-card"><span class="n">01</span><div><div class="t">default</div><div class="d">Prompts on the first use of each tool. The safest starting point.</div></div></div>
+      <div class="num-card"><span class="n">02</span><div><div class="t">acceptEdits</div><div class="d">Auto-accepts file edits and common filesystem commands like mkdir, cp, mv.</div></div></div>
+      <div class="num-card"><span class="n">03</span><div><div class="t">plan mode</div><div class="d">Read-only. Claude explores and proposes but never edits source files.</div></div></div>
+      <div class="num-card"><span class="n">04</span><div><div class="t">bypassPermissions</div><div class="d">Skips prompts entirely — use only in fully sandboxed environments.</div></div></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 -->
+  <section class="slide">
+    <h2>Where settings live</h2>
+    <div class="subtitle">Four scopes, checked in priority order.</div>
+    <div class="table-list">
+      <div class="table-row head"><span>Scope</span><span>Location</span><span>Notes</span></div>
+      <div class="table-row"><span class="scope">User</span><span class="path">~/.claude/settings.json</span><span class="note">Applies to all of your projects</span></div>
+      <div class="table-row"><span class="scope">Project</span><span class="path">.claude/settings.json</span><span class="note">Team-shared, committed to git</span></div>
+      <div class="table-row"><span class="scope">Local</span><span class="path">.claude/settings.local.json</span><span class="note">Just you — usually gitignored</span></div>
+      <div class="table-row"><span class="scope">Managed</span><span class="path">org-deployed config</span><span class="note">Highest priority, set by your organization</span></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 -->
+  <section class="slide">
+    <h2>Picking your model</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="split-two">
+      <div class="split-col good">
+        <h4>Mid-session</h4>
+        <ul><li>Use /model to switch for the rest of the session</li><li>Doesn't persist after restart</li></ul>
+      </div>
+      <div class="split-col good">
+        <h4>Persistent default</h4>
+        <ul><li>Set the model key in settings.json</li><li>Restrict choices with availableModels</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 -->
+  <section class="slide">
+    <h2>The one file before your first prompt</h2>
+    <div class="subtitle">&nbsp;</div>
+    <p class="lead-statement">Before you type a single feature request, create <span class="hl">CLAUDE.md</span> at your project root. It's the difference between Claude re-learning your stack every session and starting warm every time.</p>
+    <p class="lead-statement" style="font-size:15px; color: var(--label);">That's the whole subject of Video 3 — coming up next.</p>
+  </section>
+
+  <!-- SLIDE 10 -->
+  <section class="slide">
+    <h2>Key takeaways</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="takeaway-list">
+      <div class="takeaway-item pos"><span class="mark">&#10003;</span><p>Install natively — curl/irm script, Homebrew, or WinGet. No npm dependency to manage.</p></div>
+      <div class="takeaway-item pos"><span class="mark">&#10003;</span><p>Choose the auth path that matches how you'll use it: subscription for solo work, Console for automation.</p></div>
+      <div class="takeaway-item pos"><span class="mark">&#10003;</span><p>Start in default permission mode. Loosen it deliberately, per project, not by habit.</p></div>
+      <div class="takeaway-item pos"><span class="mark">&#10003;</span><p>Settings resolve User &rarr; Project &rarr; Local &rarr; Managed. Know which file you're editing.</p></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 11 -->
+  <section class="slide closing">
+    <div class="next-video-tag">Next video</div>
+    <h2>CLAUDE.md</h2>
+    <p class="tagline">The most important file in your project.</p>
+    <div class="cta-row">
+      <div class="cta-card"><div class="t">Subscribe</div><div class="d">New video every week</div></div>
+      <div class="cta-card"><div class="t">Comments</div><div class="d">Questions answered below</div></div>
+    </div>
+    <div class="footer-tag">Learn Claude Code the Right Way &nbsp;&middot;&nbsp; Series Playlist</div>
+  </section>
+
+</div>
+
+<div class="deck-nav">
+  <button class="nav-btn" id="prevBtn">&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="nextBtn">Next &rarr;</button>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0;
+
+const dotsEl = document.getElementById('dots');
+slides.forEach((_, i) => {
+  const dot = document.createElement('button');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => goTo(i));
+  dotsEl.appendChild(dot);
+});
+const dots = document.querySelectorAll('.dot');
+
+document.getElementById('slideTotal').textContent = total;
+
+function render() {
+  slides.forEach((s, i) => s.classList.toggle('active', i === current));
+  dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  document.getElementById('slideNum').textContent = current + 1;
+  document.getElementById('progressFill').style.width = ((current + 1) / total * 100) + '%';
+  document.getElementById('prevBtn').disabled = current === 0;
+  document.getElementById('nextBtn').disabled = current === total - 1;
+}
+
+function goTo(i) {
+  current = Math.max(0, Math.min(total - 1, i));
+  render();
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
+document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goTo(current - 1); }
+  if (e.key === 'Home') goTo(0);
+  if (e.key === 'End') goTo(total - 1);
+});
+
+render();
+</script>
+
+</body>
+</html>
