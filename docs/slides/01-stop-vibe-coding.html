@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stop Vibe Coding — Video 1 · Learn Claude Code the Right Way</title>
+  <meta name="description" content="Slide deck for Video 1: Stop Vibe Coding — The Structured AI Development Mindset.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0E1117;
+      --surface:   #161C2D;
+      --surface2:  #1E2740;
+      --teal:      #0ABFBC;
+      --teal-dim:  #087f7d;
+      --coral:     #E05C5C;
+      --white:     #F0F4FF;
+      --muted:     #6B7A9F;
+      --label:     #A0AABF;
+      --border:    #252E45;
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'Inter', sans-serif;
+      --radius:    10px;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    a { color: var(--teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .top-bar { height: 3px; background: var(--border); position: relative; }
+    .top-bar .fill {
+      height: 100%;
+      background: var(--teal);
+      width: 8.33%;
+      transition: width 0.35s ease;
+    }
+
+    /* ── CHROME ── */
+    .deck-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .back-link {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--label);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .back-link:hover { color: var(--teal); }
+    .deck-meta {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .deck-meta .counter { color: var(--teal); }
+
+    /* ── STAGE ── */
+    .stage {
+      position: relative;
+      height: calc(100vh - 3px - 53px - 64px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 72px;
+      opacity: 0;
+      transform: translateX(24px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .kicker {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--teal);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .slide h2 {
+      font-size: clamp(22px, 3.2vw, 34px);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+      color: var(--white);
+    }
+    .subtitle {
+      font-size: 16px;
+      color: var(--label);
+      margin-bottom: 28px;
+    }
+
+    /* ── TITLE SLIDE ── */
+    .slide.title-slide { align-items: center; text-align: center; }
+    .slide.title-slide .kicker { margin-bottom: 28px; }
+    .slide.title-slide h1 {
+      font-size: clamp(34px, 6vw, 58px);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .slide.title-slide h1 em { font-style: normal; color: var(--teal); }
+    .slide.title-slide .tagline {
+      font-size: 19px;
+      color: var(--label);
+      margin-bottom: 40px;
+    }
+    .series-label {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--teal);
+      background: rgba(10,191,188,0.08);
+      border: 1px solid rgba(10,191,188,0.25);
+      border-radius: 4px;
+      padding: 4px 12px;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── NUMBERED GRID (agenda / failure modes / structured list) ── */
+    .num-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .num-grid.cols-1 { grid-template-columns: 1fr; }
+    .num-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .num-card .n {
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--teal);
+      flex-shrink: 0;
+      min-width: 30px;
+    }
+    .num-card .t { font-size: 15px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+    .num-card .d { font-size: 13.5px; color: var(--label); line-height: 1.55; }
+
+    /* ── QUOTE ── */
+    .quote-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--teal);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .quote-block .mark { font-family: var(--mono); font-size: 40px; color: var(--teal); line-height: 0.5; display: block; margin-bottom: 8px; }
+    .quote-block p { font-size: 17px; color: var(--white); line-height: 1.55; margin-bottom: 12px; }
+    .quote-block .attr { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+
+    .split-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .split-col {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+    .split-col.good { border-color: rgba(10,191,188,0.3); }
+    .split-col.bad { border-color: rgba(224,92,92,0.3); }
+    .split-col h4 {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .split-col.good h4 { color: var(--teal); }
+    .split-col.bad h4 { color: var(--coral); }
+    .split-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .split-col li { font-size: 14px; color: var(--label); display: flex; gap: 8px; }
+    .split-col.good li::before { content: '✓'; color: var(--teal); }
+    .split-col.bad li::before { content: '✗'; color: var(--coral); }
+
+    /* ── FLOW ── */
+    .flow {
+      display: flex;
+      align-items: stretch;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .flow-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      min-width: 120px;
+      flex: 1;
+    }
+    .flow-step .t { font-size: 13.5px; font-weight: 600; color: var(--white); }
+    .flow-step .d { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .flow-arrow { display: flex; align-items: center; color: var(--muted); font-size: 16px; }
+    .flow-loop {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--coral);
+      margin-bottom: 20px;
+    }
+    .outcome-box {
+      background: rgba(224,92,92,0.08);
+      border: 1px solid rgba(224,92,92,0.3);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+    .outcome-box .line1 { font-size: 14.5px; color: var(--white); margin-bottom: 6px; }
+    .outcome-box .line2 { font-family: var(--mono); font-size: 13px; color: var(--coral); }
+
+    /* ── CHECK LIST + CODE ── */
+    .two-pane {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: center;
+    }
+    .check-list { display: flex; flex-direction: column; gap: 18px; }
+    .check-item { display: flex; gap: 12px; }
+    .check-item .icon {
+      color: var(--teal);
+      font-family: var(--mono);
+      font-size: 15px;
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border: 1px solid rgba(10,191,188,0.35);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+    .check-item .t { font-size: 14.5px; font-weight: 600; color: var(--white); margin-bottom: 3px; }
+    .check-item .d { font-size: 13px; color: var(--label); line-height: 1.5; }
+
+    .code-block {
+      background: #0D1117;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .code-block .code-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .code-block pre {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.7;
+      padding: 14px 16px;
+      color: var(--label);
+      overflow-x: auto;
+    }
+    .code-block .c-h { color: var(--teal); }
+    .code-block .c-do { color: var(--coral); }
+
+    /* ── COMPARISON (two workflows) ── */
+    .compare-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .compare-col {
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .compare-col.vibe { border-color: rgba(224,92,92,0.3); }
+    .compare-col.structured { border-color: rgba(10,191,188,0.3); }
+    .compare-col h4 { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 14px; }
+    .compare-col.vibe h4 { color: var(--coral); }
+    .compare-col.structured h4 { color: var(--teal); }
+    .compare-col ol { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 9px; }
+    .compare-col ol li { counter-increment: step; font-size: 13px; color: var(--label); display: flex; gap: 8px; line-height: 1.4; }
+    .compare-col ol li::before {
+      content: counter(step);
+      font-family: var(--mono);
+      font-size: 10px;
+      flex-shrink: 0;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+    }
+    .compare-col.vibe ol li::before { background: rgba(224,92,92,0.15); color: var(--coral); }
+    .compare-col.structured ol li::before { background: rgba(10,191,188,0.15); color: var(--teal); }
+    .compare-col ol li.final { color: var(--white); font-weight: 600; }
+
+    /* ── MENTAL MODEL ── */
+    .lead-statement {
+      font-size: 19px;
+      color: var(--white);
+      line-height: 1.55;
+      margin-bottom: 28px;
+      max-width: 780px;
+    }
+    .lead-statement .hl { color: var(--teal); }
+    .transform-rows { display: flex; flex-direction: column; gap: 12px; }
+    .transform-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+    }
+    .transform-row.positive { border-color: rgba(10,191,188,0.3); }
+    .transform-row .from { font-size: 13.5px; color: var(--label); min-width: 190px; }
+    .transform-row .arrow { color: var(--muted); font-family: var(--mono); }
+    .transform-row .to { font-size: 13.5px; color: var(--white); }
+    .transform-row.positive .to { color: var(--teal); }
+
+    /* ── ROADMAP ── */
+    .roadmap-list { display: flex; flex-direction: column; gap: 10px; }
+    .roadmap-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 13px 18px;
+    }
+    .roadmap-item.current { border-color: rgba(10,191,188,0.4); background: rgba(10,191,188,0.06); }
+    .roadmap-item .num { font-family: var(--mono); font-size: 13px; color: var(--muted); min-width: 44px; }
+    .roadmap-item.current .num { color: var(--teal); }
+    .roadmap-item .label { font-size: 14px; color: var(--white); flex: 1; }
+    .roadmap-item .here { font-family: var(--mono); font-size: 11.5px; color: var(--teal); }
+
+    /* ── TAKEAWAYS ── */
+    .takeaway-list { display: flex; flex-direction: column; gap: 14px; }
+    .takeaway-item { display: flex; gap: 14px; align-items: flex-start; }
+    .takeaway-item .mark {
+      font-family: var(--mono);
+      font-size: 13px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .takeaway-item.neg .mark { background: rgba(224,92,92,0.15); color: var(--coral); }
+    .takeaway-item.pos .mark { background: rgba(10,191,188,0.15); color: var(--teal); }
+    .takeaway-item p { font-size: 14.5px; color: var(--label); line-height: 1.55; }
+
+    /* ── CLOSING ── */
+    .slide.closing { text-align: center; align-items: center; }
+    .closing .next-video-tag { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .closing h2 { margin-bottom: 10px; }
+    .closing .tagline { color: var(--label); font-size: 15.5px; margin-bottom: 32px; }
+    .cta-row { display: flex; gap: 16px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap; }
+    .cta-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 26px;
+      min-width: 180px;
+    }
+    .cta-card .t { font-size: 14px; font-weight: 600; color: var(--teal); margin-bottom: 4px; }
+    .cta-card .d { font-size: 12.5px; color: var(--muted); }
+    .closing .footer-tag { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+    /* ── NAV FOOTER ── */
+    .deck-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      border-top: 1px solid var(--border);
+      height: 64px;
+    }
+    .nav-btn {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--label);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) { border-color: var(--teal-dim); color: var(--teal); }
+    .nav-btn:disabled { opacity: 0.35; cursor: default; }
+
+    .dots { display: flex; gap: 7px; }
+    .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      border: none;
+      padding: 0;
+    }
+    .dot.active { background: var(--teal); transform: scale(1.3); }
+    .dot:hover { background: var(--teal-dim); }
+
+    @media (max-width: 760px) {
+      body { overflow: auto; }
+      .stage { height: auto; min-height: calc(100vh - 3px - 53px - 64px); }
+      .slide { position: relative; padding: 28px 24px; opacity: 1; transform: none; display: none; }
+      .slide.active { display: flex; }
+      .split-two, .two-pane, .compare-two, .num-grid { grid-template-columns: 1fr; }
+      .flow { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); justify-content: flex-start; padding-left: 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar"><div class="fill" id="progressFill"></div></div>
+
+<div class="deck-header">
+  <a class="back-link" href="../index.html">&larr; Back to series</a>
+  <div class="deck-meta">
+    <span>Video 1 · Stop Vibe Coding</span>
+    <span class="counter"><span id="slideNum">1</span> / <span id="slideTotal">12</span></span>
+  </div>
+</div>
+
+<div class="stage" id="stage">
+
+  <!-- SLIDE 1 -->
+  <section class="slide title-slide active">
+    <div class="kicker">Learn Claude Code the Right Way &nbsp;&middot;&nbsp; Video 1 of 15</div>
+    <h1>Stop Vibe Coding<br><em>The Structured AI Development Mindset</em></h1>
+    <p class="tagline">Same AI. Completely different results.</p>
+    <span class="series-label">Claude Code Mastery Series</span>
+  </section>
+
+  <!-- SLIDE 2 -->
+  <section class="slide">
+    <div class="kicker">Agenda</div>
+    <h2>What we cover today</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="num-grid">
+      <div class="num-card"><span class="n">01</span><div><div class="t">What vibe coding actually is</div></div></div>
+      <div class="num-card"><span class="n">02</span><div><div class="t">The 4 failure modes it creates</div></div></div>
+      <div class="num-card"><span class="n">03</span><div><div class="t">What structured AI coding looks like</div></div></div>
+      <div class="num-card"><span class="n">04</span><div><div class="t">The mental model shift that changes everything</div></div></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 -->
+  <section class="slide">
+    <h2>What is vibe coding?</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="quote-block">
+      <span class="mark">&ldquo;</span>
+      <p>A style of AI-assisted development where you feel your way through the code. Describe what you want. Accept what the AI gives. Iterate on vibes.</p>
+      <div class="attr">&mdash; Andrej Karpathy</div>
+    </div>
+    <div class="split-two">
+      <div class="split-col good">
+        <h4>Works fine for</h4>
+        <ul><li>Throwaway scripts</li><li>One-off prototypes</li><li>Weekend experiments</li></ul>
+      </div>
+      <div class="split-col bad">
+        <h4>Breaks down for</h4>
+        <ul><li>Team codebases</li><li>Long-lived features</li><li>Production systems</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 -->
+  <section class="slide">
+    <h2>The vibe coding trap</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="flow">
+      <div class="flow-step"><div class="t">Open Claude</div><div class="d">no plan</div></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><div class="t">Ask for feature</div><div class="d">vague prompt</div></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><div class="t">Accept code</div><div class="d">paste it in</div></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><div class="t">Something breaks</div><div class="d">unknown why</div></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><div class="t">Ask to fix it</div><div class="d">repeat &times;40</div></div>
+    </div>
+    <div class="flow-loop">&#8635; loops back to step 3 indefinitely</div>
+    <div class="outcome-box">
+      <div class="line1">The outcome: code that sort of works &middot; that you don't understand &middot; that nobody can maintain.</div>
+      <div class="line2">Technical debt — produced at machine speed.</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 -->
+  <section class="slide">
+    <h2>4 failure modes of vibe coding</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="num-grid">
+      <div class="num-card"><span class="n">01</span><div><div class="t">Context saturation</div><div class="d">The AI loses track of decisions made earlier in the session. Code starts contradicting itself silently.</div></div></div>
+      <div class="num-card"><span class="n">02</span><div><div class="t">No source of truth</div><div class="d">The spec lives in chat history. Invisible to your team. Impossible to reconstruct a week later.</div></div></div>
+      <div class="num-card"><span class="n">03</span><div><div class="t">Code you can't explain</div><div class="d">You accepted it without understanding it. Debugging is guesswork. Code reviews are theater.</div></div></div>
+      <div class="num-card"><span class="n">04</span><div><div class="t">Token costs spiral</div><div class="d">Reprompting, re-explaining, recovering lost context. All wasted spend that upfront planning eliminates.</div></div></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 -->
+  <section class="slide">
+    <h2>Structured AI coding</h2>
+    <div class="subtitle">Give the AI — and yourself — a framework to operate within.</div>
+    <div class="num-grid cols-1">
+      <div class="num-card"><span class="n">01</span><div><div class="t">CLAUDE.md</div><div class="d">Project's persistent brain — loads every session</div></div></div>
+      <div class="num-card"><span class="n">02</span><div><div class="t">Write a spec first</div><div class="d">Define done before writing a single line</div></div></div>
+      <div class="num-card"><span class="n">03</span><div><div class="t">Plan Mode</div><div class="d">Design the approach before implementation</div></div></div>
+      <div class="num-card"><span class="n">04</span><div><div class="t">Manage context</div><div class="d">Treat context window like RAM — deliberately</div></div></div>
+      <div class="num-card"><span class="n">05</span><div><div class="t">Custom commands</div><div class="d">Encode your best practices, invoke consistently</div></div></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 -->
+  <section class="slide">
+    <h2>CLAUDE.md</h2>
+    <div class="subtitle">The most important file in your project</div>
+    <div class="two-pane">
+      <div class="check-list">
+        <div class="check-item"><span class="icon">&#10003;</span><div><div class="t">Loads automatically</div><div class="d">Claude reads it at the start of every session, no prompt needed.</div></div></div>
+        <div class="check-item"><span class="icon">&#10003;</span><div><div class="t">Project memory</div><div class="d">Stack, conventions, architecture decisions, do-nots.</div></div></div>
+        <div class="check-item"><span class="icon">&#10003;</span><div><div class="t">Survives resets</div><div class="d">Unlike chat history — this is persistent across every session.</div></div></div>
+      </div>
+      <div class="code-block">
+        <div class="code-title">CLAUDE.md</div>
+        <pre><span class="c-h"># Tech stack</span>
+- Node.js 20, TypeScript
+- PostgreSQL + Drizzle ORM
+
+<span class="c-h"># Conventions</span>
+- Use async/await always
+- Errors via /lib/errors
+
+<span class="c-h"># Do not</span>
+<span class="c-do">- Install packages without asking
+- Edit migration files</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 -->
+  <section class="slide">
+    <h2>Two workflows — same AI</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="compare-two">
+      <div class="compare-col vibe">
+        <h4>Vibe coding</h4>
+        <ol>
+          <li>Open Claude. No plan.</li>
+          <li>Ask for a feature — vague prompt.</li>
+          <li>Accept &amp; paste the code.</li>
+          <li>Something breaks — unknown why.</li>
+          <li>Ask AI to fix it. Repeat &times; 40.</li>
+          <li class="final">Declare victory. Code you can't explain.</li>
+        </ol>
+      </div>
+      <div class="compare-col structured">
+        <h4>Structured AI coding</h4>
+        <ol>
+          <li>Write a spec — define done.</li>
+          <li>Update CLAUDE.md with context.</li>
+          <li>Plan Mode — design before code.</li>
+          <li>One scoped task at a time.</li>
+          <li>Review each change before moving on.</li>
+          <li class="final">Maintainable code you understand.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 -->
+  <section class="slide">
+    <h2>The mental model that changes everything</h2>
+    <div class="subtitle">&nbsp;</div>
+    <p class="lead-statement">Claude Code is not a magic solution machine. It is a <span class="hl">brilliant junior developer</span> who needs clear instructions, a well-documented project, and a defined scope for each task.</p>
+    <div class="transform-rows">
+      <div class="transform-row"><div class="from">Vague instructions</div><div class="arrow">&rarr;</div><div class="to">Vague, inconsistent code — regardless of how good the AI is.</div></div>
+      <div class="transform-row"><div class="from">Undocumented project</div><div class="arrow">&rarr;</div><div class="to">Every session starts cold. Claude re-learns what you already know.</div></div>
+      <div class="transform-row positive"><div class="from">Clear spec + plan</div><div class="arrow">&rarr;</div><div class="to">Remarkable output. Production-quality. Code you can maintain.</div></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 10 -->
+  <section class="slide">
+    <h2>What's coming in this series</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="roadmap-list">
+      <div class="roadmap-item current"><span class="num">01</span><span class="label">Stop Vibe Coding (this video)</span><span class="here">&larr; you are here</span></div>
+      <div class="roadmap-item"><span class="num">02</span><span class="label">Claude Code setup — install, configure, run</span></div>
+      <div class="roadmap-item"><span class="num">03</span><span class="label">CLAUDE.md — the most important file</span></div>
+      <div class="roadmap-item"><span class="num">04&ndash;06</span><span class="label">Slash commands, making changes, image context</span></div>
+      <div class="roadmap-item"><span class="num">07&ndash;09</span><span class="label">Context window, Skills, SubAgents</span></div>
+      <div class="roadmap-item"><span class="num">10&ndash;12</span><span class="label">Spec-driven dev, Plan Mode, custom commands</span></div>
+      <div class="roadmap-item"><span class="num">13&ndash;15</span><span class="label">MCP, Hooks, Plugins &amp; Notes</span></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 11 -->
+  <section class="slide">
+    <h2>Key takeaways</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="takeaway-list">
+      <div class="takeaway-item neg"><span class="mark">&#10007;</span><p>Vibe coding works for throwaway scripts. It destroys real codebases.</p></div>
+      <div class="takeaway-item neg"><span class="mark">&#10007;</span><p>The 4 failure modes: context saturation, no source of truth, code you can't explain, spiraling costs.</p></div>
+      <div class="takeaway-item pos"><span class="mark">&#10003;</span><p>Structured AI coding gives the AI a framework: CLAUDE.md, specs, Plan Mode, context management, custom commands.</p></div>
+      <div class="takeaway-item pos"><span class="mark">&#10003;</span><p>The mental model: brilliant junior developer — give it what it needs to perform at its capability.</p></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 12 -->
+  <section class="slide closing">
+    <div class="next-video-tag">Next video</div>
+    <h2>Claude Code Setup</h2>
+    <p class="tagline">Install, configure, and run — the right way from day one.</p>
+    <div class="cta-row">
+      <div class="cta-card"><div class="t">Subscribe</div><div class="d">New video every week</div></div>
+      <div class="cta-card"><div class="t">Comments</div><div class="d">Questions answered below</div></div>
+    </div>
+    <div class="footer-tag">Learn Claude Code the Right Way &nbsp;&middot;&nbsp; Series Playlist</div>
+  </section>
+
+</div>
+
+<div class="deck-nav">
+  <button class="nav-btn" id="prevBtn">&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="nextBtn">Next &rarr;</button>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0;
+
+const dotsEl = document.getElementById('dots');
+slides.forEach((_, i) => {
+  const dot = document.createElement('button');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => goTo(i));
+  dotsEl.appendChild(dot);
+});
+const dots = document.querySelectorAll('.dot');
+
+document.getElementById('slideTotal').textContent = total;
+
+function render() {
+  slides.forEach((s, i) => s.classList.toggle('active', i === current));
+  dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  document.getElementById('slideNum').textContent = current + 1;
+  document.getElementById('progressFill').style.width = ((current + 1) / total * 100) + '%';
+  document.getElementById('prevBtn').disabled = current === 0;
+  document.getElementById('nextBtn').disabled = current === total - 1;
+}
+
+function goTo(i) {
+  current = Math.max(0, Math.min(total - 1, i));
+  render();
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
+document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goTo(current - 1); }
+  if (e.key === 'Home') goTo(0);
+  if (e.key === 'End') goTo(total - 1);
+});
+
+render();
+</script>
+
+</body>
+</html>
