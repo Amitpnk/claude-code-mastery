@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hooks in Claude Code — Video 14 · Learn Claude Code the Right Way</title>
+  <meta name="description" content="Slide deck for Video 14: Hooks in Claude Code — Automate Your Quality Gates.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0E1117;
+      --surface:   #161C2D;
+      --surface2:  #1E2740;
+      --teal:      #0ABFBC;
+      --teal-dim:  #087f7d;
+      --coral:     #E05C5C;
+      --white:     #F0F4FF;
+      --muted:     #6B7A9F;
+      --label:     #A0AABF;
+      --border:    #252E45;
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'Inter', sans-serif;
+      --radius:    10px;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    a { color: var(--teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .top-bar { height: 3px; background: var(--border); position: relative; }
+    .top-bar .fill {
+      height: 100%;
+      background: var(--teal);
+      width: 8.33%;
+      transition: width 0.35s ease;
+    }
+
+    .deck-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .back-link {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--label);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .back-link:hover { color: var(--teal); }
+    .deck-meta {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .deck-meta .counter { color: var(--teal); }
+
+    .stage {
+      position: relative;
+      height: calc(100vh - 3px - 53px - 64px);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 72px;
+      opacity: 0;
+      transform: translateX(24px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .kicker {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--teal);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .slide h2 {
+      font-size: clamp(22px, 3.2vw, 34px);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+      color: var(--white);
+    }
+    .subtitle {
+      font-size: 16px;
+      color: var(--label);
+      margin-bottom: 28px;
+    }
+
+    .slide.title-slide { align-items: center; text-align: center; }
+    .slide.title-slide .kicker { margin-bottom: 28px; }
+    .slide.title-slide h1 {
+      font-size: clamp(34px, 6vw, 58px);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .slide.title-slide h1 em { font-style: normal; color: var(--teal); }
+    .slide.title-slide .tagline {
+      font-size: 19px;
+      color: var(--label);
+      margin-bottom: 40px;
+    }
+    .series-label {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--teal);
+      background: rgba(10,191,188,0.08);
+      border: 1px solid rgba(10,191,188,0.25);
+      border-radius: 4px;
+      padding: 4px 12px;
+      letter-spacing: 0.06em;
+    }
+
+    .num-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .num-grid.cols-1 { grid-template-columns: 1fr; }
+    .num-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .num-card .n {
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--teal);
+      flex-shrink: 0;
+      min-width: 30px;
+    }
+    .num-card .t { font-size: 15px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+    .num-card .d { font-size: 13.5px; color: var(--label); line-height: 1.55; }
+
+    .split-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .split-col {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+    .split-col.good { border-color: rgba(10,191,188,0.3); }
+    .split-col.bad { border-color: rgba(224,92,92,0.3); }
+    .split-col h4 {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .split-col.good h4 { color: var(--teal); }
+    .split-col.bad h4 { color: var(--coral); }
+    .split-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .split-col li { font-size: 14px; color: var(--label); display: flex; gap: 8px; }
+    .split-col.good li::before { content: '✓'; color: var(--teal); }
+    .split-col.bad li::before { content: '✗'; color: var(--coral); }
+
+    .table-list { display: flex; flex-direction: column; gap: 10px; }
+    .table-row {
+      display: grid;
+      grid-template-columns: 140px 1fr 1fr;
+      gap: 16px;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 13px 18px;
+    }
+    .table-row.head {
+      background: transparent;
+      border: none;
+      padding: 0 18px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .table-row .scope { font-family: var(--mono); font-size: 13px; color: var(--teal); }
+    .table-row .path { font-family: var(--mono); font-size: 13px; color: var(--white); }
+    .table-row .note { font-size: 13px; color: var(--label); }
+
+    .two-pane {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: center;
+    }
+    .check-list { display: flex; flex-direction: column; gap: 18px; }
+    .check-item { display: flex; gap: 12px; }
+    .check-item .icon {
+      color: var(--teal);
+      font-family: var(--mono);
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border: 1px solid rgba(10,191,188,0.35);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+    .check-item .t { font-size: 14.5px; font-weight: 600; color: var(--white); margin-bottom: 3px; }
+    .check-item .d { font-size: 13px; color: var(--label); line-height: 1.5; }
+
+    .code-block {
+      background: #0D1117;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .code-block .code-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .code-block pre {
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.8;
+      padding: 14px 16px;
+      color: var(--label);
+      overflow-x: auto;
+    }
+    .code-block .c-h { color: var(--teal); }
+    .code-block .c-prompt { color: var(--muted); }
+    .code-block .c-do { color: var(--coral); }
+
+    .compare-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .compare-col {
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .compare-col.teal-border { border-color: rgba(10,191,188,0.3); }
+    .compare-col h4 { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; color: var(--teal); }
+    .compare-col .sub { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+    .compare-col ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .compare-col li { font-size: 13.5px; color: var(--label); display: flex; gap: 8px; line-height: 1.4; }
+    .compare-col li::before { content: '—'; color: var(--teal); flex-shrink: 0; }
+
+    .lead-statement {
+      font-size: 19px;
+      color: var(--white);
+      line-height: 1.55;
+      margin-bottom: 28px;
+      max-width: 780px;
+    }
+    .lead-statement .hl { color: var(--teal); }
+
+    .takeaway-list { display: flex; flex-direction: column; gap: 14px; }
+    .takeaway-item { display: flex; gap: 14px; align-items: flex-start; }
+    .takeaway-item .mark {
+      font-family: var(--mono);
+      font-size: 13px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .takeaway-item.neg .mark { background: rgba(224,92,92,0.15); color: var(--coral); }
+    .takeaway-item.pos .mark { background: rgba(10,191,188,0.15); color: var(--teal); }
+    .takeaway-item p { font-size: 14.5px; color: var(--label); line-height: 1.55; }
+
+    .slide.closing { text-align: center; align-items: center; }
+    .closing .next-video-tag { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .closing h2 { margin-bottom: 10px; }
+    .closing .tagline { color: var(--label); font-size: 15.5px; margin-bottom: 32px; }
+    .cta-row { display: flex; gap: 16px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap; }
+    .cta-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 26px;
+      min-width: 180px;
+    }
+    .cta-card .t { font-size: 14px; font-weight: 600; color: var(--teal); margin-bottom: 4px; }
+    .cta-card .d { font-size: 12.5px; color: var(--muted); }
+    .closing .footer-tag { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+    .deck-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      border-top: 1px solid var(--border);
+      height: 64px;
+    }
+    .nav-btn {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--label);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) { border-color: var(--teal-dim); color: var(--teal); }
+    .nav-btn:disabled { opacity: 0.35; cursor: default; }
+
+    .dots { display: flex; gap: 7px; }
+    .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      border: none;
+      padding: 0;
+    }
+    .dot.active { background: var(--teal); transform: scale(1.3); }
+    .dot:hover { background: var(--teal-dim); }
+
+    @media (max-width: 760px) {
+      body { overflow: auto; }
+      .stage { height: auto; min-height: calc(100vh - 3px - 53px - 64px); }
+      .slide { position: relative; padding: 28px 24px; opacity: 1; transform: none; display: none; }
+      .slide.active { display: flex; }
+      .split-two, .two-pane, .compare-two, .num-grid { grid-template-columns: 1fr; }
+      .table-row { grid-template-columns: 1fr; gap: 4px; }
+      .table-row.head { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar"><div class="fill" id="progressFill"></div></div>
+
+<div class="deck-header">
+  <a class="back-link" href="../index.html">&larr; Back to series</a>
+  <div class="deck-meta">
+    <span>Video 14 · Hooks in Claude Code</span>
+    <span class="counter"><span id="slideNum">1</span> / <span id="slideTotal">11</span></span>
+  </div>
+</div>
+
+<div class="stage" id="stage">
+
+  <!-- SLIDE 1 -->
+  <section class="slide title-slide active">
+    <div class="kicker">Learn Claude Code the Right Way &nbsp;&middot;&nbsp; Video 14 of 15</div>
+    <h1>Hooks in Claude Code<br><em>Automate Your Quality Gates</em></h1>
+    <p class="tagline">Enforce it automatically. Don't just hope.</p>
+    <span class="series-label">Claude Code Mastery Series</span>
+  </section>
+
+  <!-- SLIDE 2 -->
+  <section class="slide">
+    <div class="kicker">Agenda</div>
+    <h2>What we cover today</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="num-grid">
+      <div class="num-card"><span class="n">01</span><div><div class="t">What Hooks actually are</div></div></div>
+      <div class="num-card"><span class="n">02</span><div><div class="t">The key events: PreToolUse, PostToolUse, Stop</div></div></div>
+      <div class="num-card"><span class="n">03</span><div><div class="t">Practical hooks worth setting up</div></div></div>
+      <div class="num-card"><span class="n">04</span><div><div class="t">Hooks vs CLAUDE.md — enforcement vs guidance</div></div></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 -->
+  <section class="slide">
+    <h2>What is a Hook?</h2>
+    <div class="subtitle">The enforcement mechanism CLAUDE.md explicitly isn't.</div>
+    <div class="check-list">
+      <div class="check-item"><span class="icon">&#10003;</span><div><div class="t">A shell command, triggered automatically</div><div class="d">Fires on real Claude Code events — no prompt required to invoke it.</div></div></div>
+      <div class="check-item"><span class="icon">&#10003;</span><div><div class="t">Runs outside the model</div><div class="d">Deterministic — it happens the same way every time, regardless of what Claude intends.</div></div></div>
+      <div class="check-item"><span class="icon">&#10003;</span><div><div class="t">Back to Video 3</div><div class="d">We said CLAUDE.md shapes behavior but isn't a hard block. This is that hard block.</div></div></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 -->
+  <section class="slide">
+    <h2>The key hook events</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="table-list">
+      <div class="table-row head"><span>Event</span><span>Fires</span><span>Typical use</span></div>
+      <div class="table-row"><span class="scope">PreToolUse</span><span class="path">Before a tool runs</span><span class="note">Block a dangerous command outright</span></div>
+      <div class="table-row"><span class="scope">PostToolUse</span><span class="path">After a tool runs</span><span class="note">Auto-lint or auto-format the file just edited</span></div>
+      <div class="table-row"><span class="scope">Stop</span><span class="path">When Claude finishes responding</span><span class="note">Desktop notification, run the test suite</span></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 -->
+  <section class="slide">
+    <h2>Practical hooks worth setting up</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="num-grid">
+      <div class="num-card"><span class="n">01</span><div><div class="t">Auto-lint / auto-format</div><div class="d">On every file edit, automatically — no separate step to remember.</div></div></div>
+      <div class="num-card"><span class="n">02</span><div><div class="t">Block dangerous commands</div><div class="d">rm -rf, force push — stopped before they run, not after.</div></div></div>
+      <div class="num-card"><span class="n">03</span><div><div class="t">Desktop notification</div><div class="d">Know the moment a long task finishes, without watching the terminal.</div></div></div>
+      <div class="num-card"><span class="n">04</span><div><div class="t">Run tests automatically</div><div class="d">After code changes, so a broken test never sits unnoticed.</div></div></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 -->
+  <section class="slide">
+    <h2>A PreToolUse hook, in practice</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="code-block">
+      <div class="code-title">.claude/settings.json</div>
+      <pre><span class="c-h">{</span>
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Bash",
+      "hooks": [{
+        "type": "command",
+        "command": <span class="c-do">"./check-dangerous-command.sh"</span>
+      }]
+    }]
+  }
+<span class="c-h">}</span></pre>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 -->
+  <section class="slide">
+    <h2>Hooks vs CLAUDE.md</h2>
+    <div class="subtitle">Guidance and enforcement solve different problems.</div>
+    <div class="compare-two">
+      <div class="compare-col">
+        <h4>CLAUDE.md</h4>
+        <div class="sub">Guidance</div>
+        <ul>
+          <li>Claude reads and follows it in good faith</li>
+          <li>Shapes behavior — not a hard block</li>
+        </ul>
+      </div>
+      <div class="compare-col teal-border">
+        <h4>Hooks</h4>
+        <div class="sub">Enforcement</div>
+        <ul>
+          <li>Runs regardless of what Claude intends</li>
+          <li>Use it for anything that must never happen</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 -->
+  <section class="slide">
+    <h2>Common mistakes</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="split-two">
+      <div class="split-col good">
+        <h4>Do this</h4>
+        <ul><li>Start with low-risk automations — lint and format first</li><li>Make blocked actions explain why they were blocked</li><li>Test a hook before relying on it in real sessions</li></ul>
+      </div>
+      <div class="split-col bad">
+        <h4>Not this</h4>
+        <ul><li>Hooks so aggressive they block legitimate work</li><li>Silent blocks with no explanation of what happened or why</li><li>Skipping hooks with --no-verify out of habit instead of fixing the cause</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 -->
+  <section class="slide">
+    <h2>One more piece worth sharing</h2>
+    <div class="subtitle">&nbsp;</div>
+    <p class="lead-statement">Hooks, Skills, commands, MCP config — every piece of this series is something worth packaging up and handing to a teammate in one step. That's exactly what <span class="hl">Plugins</span> are for, in our final video.</p>
+  </section>
+
+  <!-- SLIDE 10 -->
+  <section class="slide">
+    <h2>Key takeaways</h2>
+    <div class="subtitle">&nbsp;</div>
+    <div class="takeaway-list">
+      <div class="takeaway-item pos"><span class="mark">&#10003;</span><p>A Hook is a shell command triggered automatically by real Claude Code events.</p></div>
+      <div class="takeaway-item pos"><span class="mark">&#10003;</span><p>PreToolUse can block actions; PostToolUse and Stop react after the fact.</p></div>
+      <div class="takeaway-item pos"><span class="mark">&#10003;</span><p>Start with low-risk automations like auto-lint before blocking anything.</p></div>
+      <div class="takeaway-item pos"><span class="mark">&#10003;</span><p>CLAUDE.md is guidance Claude follows in good faith; Hooks are enforcement.</p></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 11 -->
+  <section class="slide closing">
+    <div class="next-video-tag">Final video</div>
+    <h2>Plugins &amp; Notes</h2>
+    <p class="tagline">The final layer of Claude Code mastery.</p>
+    <div class="cta-row">
+      <div class="cta-card"><div class="t">Subscribe</div><div class="d">New video every week</div></div>
+      <div class="cta-card"><div class="t">Comments</div><div class="d">Questions answered below</div></div>
+    </div>
+    <div class="footer-tag">Learn Claude Code the Right Way &nbsp;&middot;&nbsp; Series Playlist</div>
+  </section>
+
+</div>
+
+<div class="deck-nav">
+  <button class="nav-btn" id="prevBtn">&larr; Prev</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="nextBtn">Next &rarr;</button>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0;
+
+const dotsEl = document.getElementById('dots');
+slides.forEach((_, i) => {
+  const dot = document.createElement('button');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => goTo(i));
+  dotsEl.appendChild(dot);
+});
+const dots = document.querySelectorAll('.dot');
+
+document.getElementById('slideTotal').textContent = total;
+
+function render() {
+  slides.forEach((s, i) => s.classList.toggle('active', i === current));
+  dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  document.getElementById('slideNum').textContent = current + 1;
+  document.getElementById('progressFill').style.width = ((current + 1) / total * 100) + '%';
+  document.getElementById('prevBtn').disabled = current === 0;
+  document.getElementById('nextBtn').disabled = current === total - 1;
+}
+
+function goTo(i) {
+  current = Math.max(0, Math.min(total - 1, i));
+  render();
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
+document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goTo(current - 1); }
+  if (e.key === 'Home') goTo(0);
+  if (e.key === 'End') goTo(total - 1);
+});
+
+render();
+</script>
+
+</body>
+</html>
